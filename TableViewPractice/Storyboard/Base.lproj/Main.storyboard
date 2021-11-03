@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="c7Q-C0-7Ci">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="c7Q-C0-7Ci">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -12,7 +12,6 @@
         <!--설정-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="TableViewPractice" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -58,13 +57,13 @@
                         <outlet property="tableView" destination="Ncx-Dh-sYP" id="uSC-gK-4od"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="589.85507246376812" y="71.651785714285708"/>
         </scene>
         <!--집중 모드-->
         <scene sceneID="aBr-Ef-u3X">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xNk-cd-Fhy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <tableViewController id="5ZB-RD-fSC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="Llf-em-f5U">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -224,6 +223,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="집중 모드" id="rhe-q1-xxm"/>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xNk-cd-Fhy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2597.1014492753625" y="94.419642857142847"/>
         </scene>
@@ -418,7 +418,13 @@
                             <constraint firstItem="6AV-n9-pSn" firstAttribute="bottom" secondItem="yX4-qd-1r4" secondAttribute="bottom" id="szs-2i-LZa"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="쇼핑" id="ezp-km-Sdb"/>
+                    <navigationItem key="navigationItem" title="쇼핑" id="ezp-km-Sdb">
+                        <barButtonItem key="rightBarButtonItem" title="정렬" id="bWE-c8-7Xy">
+                            <connections>
+                                <action selector="filterButtonClicked:" destination="GBe-6o-8pN" id="ikF-fB-RtA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="headerContainerView" destination="elF-RX-Gsp" id="EwA-Dg-10R"/>
                         <outlet property="tableView" destination="yX4-qd-1r4" id="4GW-ZI-ASG"/>

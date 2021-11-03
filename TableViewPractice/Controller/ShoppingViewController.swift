@@ -24,6 +24,37 @@ class ShoppingViewController: UIViewController {
     
     //MARK: Method
     
+    @IBAction func filterButtonClicked(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let checked = UIAlertAction(title: "완료", style: .default) { _ in
+            print("check")
+            self.tasks = self.localRealm.objects(ShoppingItem.self).sorted(byKeyPath: "checked", ascending: false)
+            self.tableView.reloadData()
+        }
+        
+        let sortedTitle = UIAlertAction(title: "제목", style: .default) { _ in
+            print("제목 순서")
+            self.tasks = self.localRealm.objects(ShoppingItem.self).sorted(byKeyPath: "text", ascending: true)
+            self.tableView.reloadData()
+        }
+        
+        let stared = UIAlertAction(title: "즐겨찾기", style: .default) { _ in
+            print("즐겨찾기")
+            self.tasks = self.localRealm.objects(ShoppingItem.self).sorted(byKeyPath: "stared", ascending: false)
+            self.tableView.reloadData()
+        }
+        
+        let cancel = UIAlertAction(title: "취소", style: .destructive, handler: nil)
+        
+        
+        alert.addAction(checked)
+        alert.addAction(sortedTitle)
+        alert.addAction(stared)
+        alert.addAction(cancel)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
     @IBAction func addList(_ sender: UIButton) {
         guard let text = textField.text, !text.isEmpty else {
             let alert = UIAlertController(title: nil, message: "내용을 입력해주세요.", preferredStyle: .alert)
