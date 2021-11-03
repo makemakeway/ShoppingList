@@ -9,9 +9,9 @@ import UIKit
 
 class ShoppingTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var checkMark: UIButton?
-    @IBOutlet weak var shoppingLabel: UILabel?
-    @IBOutlet weak var starMark: UIButton?
+    @IBOutlet weak var checkMark: UIButton!
+    @IBOutlet weak var shoppingLabel: UILabel!
+    @IBOutlet weak var starMark: UIButton!
     
 
     override func awakeFromNib() {

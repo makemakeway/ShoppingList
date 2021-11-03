@@ -20,12 +20,6 @@ class ShoppingViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var headerContainerView: UIView!
     
-    var shoppingList: [ShoppingModel] = [] {
-        didSet {
-            self.tableView.reloadData()
-        }
-    }
-    
     @IBOutlet weak var textField: UITextField!
     
     //MARK: Method
@@ -43,15 +37,9 @@ class ShoppingViewController: UIViewController {
         try! localRealm.write {
             localRealm.add(task)
         }
+        print(localRealm.configuration.fileURL)
         
         tableView.reloadData()
-    }
-    
-    func fetchList() {
-        if let data = UserDefaults.standard.object(forKey: "shoppingList") as? Data {
-            self.shoppingList = try! PropertyListDecoder().decode([ShoppingModel].self, from: data)
-        }
-        
     }
     
     func headerContainerViewConfig() {
@@ -65,16 +53,22 @@ class ShoppingViewController: UIViewController {
     
     @objc func checkButtonClicked(_ sender: UIButton) {
         print("\(sender.tag)번 버튼 눌림")
-        shoppingList[sender.tag].checked.toggle()
+        
+        try! localRealm.write {
+            tasks[sender.tag].checked.toggle()
+            tableView.reloadData()
+        }
         
         
     }
     
     @objc func starButtonClicked(_ sender: UIButton) {
         print("\(sender.tag)번 버튼 눌림")
-        shoppingList[sender.tag].stared.toggle()
         
-        
+        try! localRealm.write {
+            tasks[sender.tag].stared.toggle()
+            tableView.reloadData()
+        }
     }
     
     
@@ -89,7 +83,6 @@ class ShoppingViewController: UIViewController {
         tableView.estimatedRowHeight = 60
         
         textField.delegate = self
-        fetchList()
         textFieldConfig()
         headerContainerViewConfig()
         
@@ -127,28 +120,32 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource {
         let data = tasks[indexPath.row]
         
         //Cell CheckButton Config
+        cell.checkMark.tag = indexPath.row
+        
         if data.checked {
-            cell.checkMark?.setImage(UIImage(systemName: "checkmark.square.fill"), for: .normal)
+            cell.checkMark.setImage(UIImage(systemName: "checkmark.square.fill"), for: .normal)
         } else {
-            cell.checkMark?.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+            cell.checkMark.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
         }
-        cell.checkMark?.tag = indexPath.row
-        cell.checkMark?.addTarget(self, action: #selector(checkButtonClicked(_:)), for: .touchUpInside)
+        
+        cell.checkMark.addTarget(self, action: #selector(checkButtonClicked(_:)), for: .touchUpInside)
         
         
         //Cell Label Config
-        cell.shoppingLabel?.text = data.text
-        cell.shoppingLabel?.numberOfLines = 0
+        cell.shoppingLabel.text = data.text
+        cell.shoppingLabel.numberOfLines = 0
         
         
         //Cell StarButton Config
+        cell.starMark.tag = indexPath.row
+        
         if data.stared {
-            cell.starMark?.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            cell.starMark.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
-            cell.starMark?.setImage(UIImage(systemName: "star"), for: .normal)
+            cell.starMark.setImage(UIImage(systemName: "star"), for: .normal)
         }
-        cell.starMark?.tag = indexPath.row
-        cell.starMark?.addTarget(self, action: #selector(starButtonClicked(_:)), for: .touchUpInside)
+        
+        cell.starMark.addTarget(self, action: #selector(starButtonClicked(_:)), for: .touchUpInside)
         
         
         
@@ -167,7 +164,10 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            shoppingList.remove(at: indexPath.row)
+            try! localRealm.write {
+                localRealm.delete( tasks[indexPath.row] )
+                tableView.reloadData()
+            }
         }
     }
 }
@@ -177,7 +177,10 @@ extension ShoppingViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         if !textField.text!.isEmpty {
-            shoppingList.append(ShoppingModel(checked: false, text: textField.text!, stared: false))
+            try! localRealm.write {
+                localRealm.add(ShoppingItem(checked: false, text: textField.text!, stared: false))
+                tableView.reloadData()
+            }
         } else {
             let alert = UIAlertController(title: nil, message: "내용을 입력해주세요.", preferredStyle: .alert)
             let okButton = UIAlertAction(title: "확인", style: .default, handler: nil)
