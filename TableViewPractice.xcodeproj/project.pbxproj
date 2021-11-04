@@ -10,6 +10,7 @@
 		FF89F33827310F9A00A60647 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = FF89F33727310F9A00A60647 /* Realm */; };
 		FF89F33A27310F9A00A60647 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FF89F33927310F9A00A60647 /* RealmSwift */; };
 		FF89F33D273110FF00A60647 /* RealmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89F33C273110FF00A60647 /* RealmModel.swift */; };
+		FF89F3832733C46900A60647 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = FF89F3822733C46900A60647 /* Zip */; };
 		FFA7747F27154D1400293F6B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA7747E27154D1400293F6B /* AppDelegate.swift */; };
 		FFA7748127154D1400293F6B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA7748027154D1400293F6B /* SceneDelegate.swift */; };
 		FFA7748327154D1400293F6B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA7748227154D1400293F6B /* ViewController.swift */; };
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF89F3832733C46900A60647 /* Zip in Frameworks */,
 				FF89F33A27310F9A00A60647 /* RealmSwift in Frameworks */,
 				FF89F33827310F9A00A60647 /* Realm in Frameworks */,
 			);
@@ -150,6 +152,7 @@
 			packageProductDependencies = (
 				FF89F33727310F9A00A60647 /* Realm */,
 				FF89F33927310F9A00A60647 /* RealmSwift */,
+				FF89F3822733C46900A60647 /* Zip */,
 			);
 			productName = TableViewPractice;
 			productReference = FFA7747B27154D1400293F6B /* TableViewPractice.app */;
@@ -181,6 +184,7 @@
 			mainGroup = FFA7747227154D1400293F6B;
 			packageReferences = (
 				FF89F33627310F9A00A60647 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				FF89F3812733C46900A60647 /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = FFA7747C27154D1400293F6B /* Products */;
 			projectDirPath = "";
@@ -445,6 +449,14 @@
 				version = 10.18.0;
 			};
 		};
+		FF89F3812733C46900A60647 /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -457,6 +469,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FF89F33627310F9A00A60647 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
+		};
+		FF89F3822733C46900A60647 /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FF89F3812733C46900A60647 /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

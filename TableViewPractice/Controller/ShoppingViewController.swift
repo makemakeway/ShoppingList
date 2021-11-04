@@ -7,6 +7,7 @@
 
 import UIKit
 import RealmSwift
+import Zip
 
 class ShoppingViewController: UIViewController {
 
@@ -23,6 +24,74 @@ class ShoppingViewController: UIViewController {
     @IBOutlet weak var textField: UITextField!
     
     //MARK: Method
+    
+    func documentDirectoryPath() -> String? {
+        let documentDirectory = FileManager.SearchPathDirectory.documentDirectory
+        let userDomainMask = FileManager.SearchPathDomainMask.userDomainMask
+        let path = NSSearchPathForDirectoriesInDomains(documentDirectory, userDomainMask, true)
+        
+        if let directoryPath = path.first {
+            print(directoryPath)
+            return directoryPath
+        } else {
+            return nil
+        }
+    }
+    
+    func backupData() {
+        // 4. 백업할 파일에 대한 URL 배열
+        var urlPaths = [URL]()
+        
+        // 1. 도큐먼트 폴더 위치
+        if let path = documentDirectoryPath() {
+            
+            // 2. 백업하고자 하는 파일 URL 확인
+            // 이미지 같은 경우, 백업 편의성을 위해 폴더를 생성하고, 폴데 안에 이미지를 저장하는 것이 효율적
+            let realm = (path as NSString).appendingPathComponent("default.realm")
+            
+            // 2. 백업하고자 하는 파일 존재 여부 확인
+            if FileManager.default.fileExists(atPath: realm) {
+                
+                // 5. URL 배열에 백업 파일 URL 추가
+                urlPaths.append(URL(string: realm)!)
+            } else {
+                print("DEBUG: 백업할 파일이 없습니다.")
+            }
+        }
+        
+        
+        // 3. 4번 배열에 대해 압축파일 만들기
+        do {
+            let zipFilePath = try Zip.quickZipFiles(urlPaths, fileName: "archive") // Zip
+            
+            print("압축 경로: \(zipFilePath)")
+            
+            print("여기서 ActivityController를 불러오면 된다.")
+        }
+        catch {
+          print("DEBUG: 압축파일 만들기 실패")
+        }
+    }
+    
+    @IBAction func additionalButtonClicked(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let backup = UIAlertAction(title: "백업하기", style: .default) { _ in
+            print("백업 실행")
+            self.backupData()
+        }
+        let restore = UIAlertAction(title: "복구하기", style: .default) { _ in
+            print("복구 실행")
+        }
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alert.addAction(backup)
+        alert.addAction(restore)
+        alert.addAction(cancel)
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
     
     @IBAction func filterButtonClicked(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -55,6 +124,7 @@ class ShoppingViewController: UIViewController {
         
         self.present(alert, animated: true, completion: nil)
     }
+    
     @IBAction func addList(_ sender: UIButton) {
         guard let text = textField.text, !text.isEmpty else {
             let alert = UIAlertController(title: nil, message: "내용을 입력해주세요.", preferredStyle: .alert)
