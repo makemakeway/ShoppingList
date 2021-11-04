@@ -8,13 +8,14 @@
 import UIKit
 import RealmSwift
 import Zip
+import MobileCoreServices
 
 class ShoppingViewController: UIViewController {
 
     
     //MARK: Property
     
-    let localRealm = try! Realm()
+    var localRealm = try! Realm()
     
     var tasks: Results<ShoppingItem>!
     
@@ -36,6 +37,16 @@ class ShoppingViewController: UIViewController {
         } else {
             return nil
         }
+    }
+    
+    func presentActivityViewController() {
+        // 압축파일 경로를 가져오기
+        let fileName = (documentDirectoryPath()! as NSString).appendingPathComponent("archive.zip")
+        let fileURL = URL(fileURLWithPath: fileName)
+        
+        
+        let vc = UIActivityViewController(activityItems: [fileURL], applicationActivities: [])
+        self.present(vc, animated: true, completion: nil)
     }
     
     func backupData() {
@@ -67,10 +78,18 @@ class ShoppingViewController: UIViewController {
             print("압축 경로: \(zipFilePath)")
             
             print("여기서 ActivityController를 불러오면 된다.")
+            presentActivityViewController()
         }
         catch {
           print("DEBUG: 압축파일 만들기 실패")
         }
+    }
+    
+    func restoreData() {
+        let documentPicker = UIDocumentPickerViewController(documentTypes: [kUTTypeArchive as String], in: .import)
+        documentPicker.delegate = self
+        documentPicker.allowsMultipleSelection = false
+        self.present(documentPicker, animated: true, completion: nil)
     }
     
     @IBAction func additionalButtonClicked(_ sender: UIBarButtonItem) {
@@ -81,11 +100,18 @@ class ShoppingViewController: UIViewController {
         }
         let restore = UIAlertAction(title: "복구하기", style: .default) { _ in
             print("복구 실행")
+            self.restoreData()
         }
+        let share = UIAlertAction(title: "공유하기", style: .default) { _ in
+            print("공유 실행")
+            self.presentActivityViewController()
+        }
+        
         let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         
         alert.addAction(backup)
         alert.addAction(restore)
+        alert.addAction(share)
         alert.addAction(cancel)
         
         self.present(alert, animated: true, completion: nil)
@@ -138,7 +164,6 @@ class ShoppingViewController: UIViewController {
         try! localRealm.write {
             localRealm.add(task)
         }
-        print(localRealm.configuration.fileURL)
         
         tableView.reloadData()
     }
@@ -303,5 +328,60 @@ extension ShoppingViewController: UIGestureRecognizerDelegate {
         }
         
         return true
+    }
+}
+
+//MARK: Document Picker Delegate
+
+extension ShoppingViewController: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        
+        // 선택한 파일에 대한 경로 가져오기
+        guard let selectedFileURL = urls.first else { return }
+        
+        // 디렉토리 URL
+        let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // 파일 URL. 디렉토리 경로에 선택한 파일의 경로의 마지막을 붙여놓음.
+        let sandboxFileURL = directory.appendingPathComponent(selectedFileURL.lastPathComponent)
+        
+        
+        // 압축 해제
+        if FileManager.default.fileExists(atPath: sandboxFileURL.path) {
+            do {
+                let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let fileURL = documentDirectory.appendingPathComponent("archive.zip")
+                
+                try Zip.unzipFile(fileURL,
+                                  destination: documentDirectory,
+                                  overwrite: true,
+                                  password: nil,
+                                  progress: { progress in
+                                    print(progress)
+                               }, fileOutputHandler: { unzippedFile in
+                                    print("unzip: \(unzippedFile)")
+                               })
+            } catch {
+                print("DEBUG: 압축 해제 에러")
+            }
+        } else {
+            // 데이터가 도큐먼트에 없는 경우. 파일 앱의 zip을 도큐먼트 폴더에 복사하고 압축 해제.
+            do {
+                let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let fileURL = documentDirectory.appendingPathComponent("archive.zip")
+                
+                try Zip.unzipFile(fileURL,
+                                  destination: documentDirectory,
+                                  overwrite: true,
+                                  password: nil,
+                                  progress: { progress in
+                                    print(progress)
+                               }, fileOutputHandler: { unzippedFile in
+                                    print("unzip: \(unzippedFile)")
+                               })
+            } catch {
+                print("DEBUG: 압축 해제 에러2")
+            }
+        }
     }
 }
